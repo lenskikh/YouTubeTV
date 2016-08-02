@@ -30,11 +30,13 @@ for line in open(link_file, "rb"):
     select3 = iter(select2)
     
     for i in select:
-        line = i.get_attribute('href')#get link video
-        line2 = select3.next().get_attribute('innerText')#get duration video
+        title = i.get_attribute('innerText')#get title of link
+        video_link = i.get_attribute('href')#get link video
+        time = select3.next().get_attribute('innerText')#get duration video
         #Info about duration add to link in list
-        links.insert(counter,line+' '+line2) #using INSERT for mixing videos
-        counter += 2 
+        links.insert(counter,video_link+' '+time) #using INSERT for mixing videos
+        
+        counter += 2 #counter for mixing video from other 
     counter = 0
 
 #watching videos
@@ -46,12 +48,13 @@ for link in links:
         print "watched"
     else:
         driver.get(link_and_duration[0])
-        duration = link_and_duration[1].split(":")
+        duration = link_and_duration[1].split(":") 
         #check if video less hour     
-        if len(link_and_duration) == 2:
+        if len(duration) == 2:
             #insert 0 hours if video less hour
-            link_and_duration.insert(0,'0')  
+            duration.insert(0,'0')
         wr = open(link_file,"a")
+        #wr.write(title+"\n")
         wr.write(link+"\n")#write link to watched file
         wr.close()
 
