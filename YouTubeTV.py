@@ -11,8 +11,11 @@ try:
     #Path to firefox profile. For using installed addons (like adblock)
     fp = webdriver.FirefoxProfile("/Users/Mik/Documents/fx_profile")
     driver = webdriver.Firefox(firefox_profile=fp)
-except:
+except IOError:
     driver = webdriver.Firefox()
+except:
+    driver = webdriver.Chrome()
+
 
 #COLLECT VIDEOS
 link_file = os.path.dirname(sys.argv[0]) + '/links.txt' #working correctly with pyinstaller
