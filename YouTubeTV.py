@@ -7,9 +7,12 @@ import pause
 links = []
 counter = 0
 
-#Path to firefox profile. For using installed addons (like adblock)
-fp = webdriver.FirefoxProfile("/Users/Mik/Documents/fx_profile")
-driver = webdriver.Firefox(firefox_profile=fp)
+try:
+    #Path to firefox profile. For using installed addons (like adblock)
+    fp = webdriver.FirefoxProfile("/Users/Mik/Documents/fx_profile")
+    driver = webdriver.Firefox(firefox_profile=fp)
+except:
+    driver = webdriver.Firefox()
 
 #COLLECT VIDEOS
 link_file = os.path.dirname(sys.argv[0]) + '/links.txt' #working correctly with pyinstaller
@@ -26,8 +29,9 @@ for line in open(link_file, "rb"):
     for i in select:
         line = i.get_attribute('href')#get link video
         line2 = select3.next().get_attribute('innerText')#get duration video
-        links.insert(counter,line+' '+line2)#Info about duration add to link in list
-        counter += 2
+        #Info about duration add to link in list
+        links.insert(counter,line+' '+line2) #using INSERT for mixing videos
+        counter += 2 
     counter = 0
 
 #watching videos
@@ -40,12 +44,17 @@ for link in links:
     else:
         driver.get(link_and_duration[0])
         duration = link_and_duration[1].split(":")
+        #check if video less hour     
+        if len(link_and_duration) == 2:
+            #insert 0 hours if video less hour
+            link_and_duration.insert(0,'0')  
         wr = open(link_file,"a")
         wr.write(link+"\n")#write link to watched file
         wr.close()
 
         #sleep while user is watching
-        pause.minutes(int(duration[0]))
-        pause.seconds(int(duration[1]))
+        pause.hours(int(duration[0]))
+        pause.minutes(int(duration[1]))
+        pause.seconds(int(duration[2]))
 
 driver.quit()
